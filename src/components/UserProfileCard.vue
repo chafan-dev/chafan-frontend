@@ -1,14 +1,19 @@
 <template>
   <div class="c-card pa-3">
     <div class="row">
-      <div class="pb-4">
-        <div v-if="avatarURL" class="px-2">
+      <div class="pb-4" :class="{ 'col-12': !$vuetify.breakpoint.mdAndUp }">
+        <div v-if="avatarURL" class="px-2" :class="{ 'text-center': !$vuetify.breakpoint.mdAndUp }">
           <router-link :to="`/users/${userPreview.handle}`">
             <v-avatar class="avatarDiv" size="180" tile>
               <v-img :src="avatarURL" alt="Avatar" />
             </v-avatar>
           </router-link>
         </div>
+        <UserNameHeadline
+          v-if="!$vuetify.breakpoint.mdAndUp"
+          :user-preview="userPreview"
+          class="text-center"
+        />
         <div v-if="follows" class="text-center">
           <div>
             <router-link
@@ -77,22 +82,7 @@
         </div>
       </div>
       <div class="col align-self-center">
-        <div class="pt-6">
-          <router-link :to="'/users/' + userPreview.handle" class="text-decoration-none headline">
-            <span v-if="userPreview.full_name">
-              {{ userPreview.full_name }}
-            </span>
-            <span v-else> @{{ userPreview.handle }} </span>
-          </router-link>
-
-          <span v-if="userPreview.full_name" class="grey--text headline">
-            (@{{ userPreview.handle }})
-          </span>
-
-          <div v-if="userPreview.personal_introduction" class="secondary--text text-body-1">
-            {{ userPreview.personal_introduction }}
-          </div>
-        </div>
+        <UserNameHeadline v-if="$vuetify.breakpoint.mdAndUp" :user-preview="userPreview" />
         <v-divider class="my-2" />
         <UserProfileDetails v-if="userPublic" :user-public="userPublic" />
 
@@ -115,8 +105,9 @@ import { apiMe } from '@/api/me';
 import { commitSetShowLoginPrompt } from '@/store/main/mutations';
 import { readIsLoggedIn, readUserProfile, readToken } from '@/store/main/getters';
 import UserProfileDetails from '@/components/UserProfileDetails.vue';
+import UserNameHeadline from '@/components/UserNameHeadline.vue';
 @Component({
-  components: { UserProfileDetails },
+  components: { UserNameHeadline, UserProfileDetails },
 })
 export default class UserProfileCard extends Vue {
   @Prop() public readonly userPreview!: IUserPreview;
