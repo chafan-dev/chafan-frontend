@@ -3,179 +3,12 @@
     <v-row justify="center">
       <!-- Main panel -->
       <v-col :class="{ 'col-8': $vuetify.breakpoint.mdAndUp }" fluid>
-        <UserCard
+        <UserProfileCard
           v-if="userPublic || userPublicForVisitor"
           :userPreview="userPublic ? userPublic : userPublicForVisitor"
           :userPublic="userPublic ? userPublic : userPublicForVisitor"
-          class="mb-4 pb-7"
+          class="mb-4"
         />
-        <v-skeleton-loader v-else type="card" />
-
-        <div class="pa-4 c-card mb-5" v-if="userPublic">
-          <div class="d-flex pb-2">
-            <h2>个人资料</h2>
-            <v-spacer />
-            <v-btn
-              depressed
-              v-if="currentUserId === userPublic.uuid"
-              color="primary"
-              small
-              to="/profile/edit"
-              >编辑</v-btn
-            >
-          </div>
-          <div v-if="userPublic.about">
-            <span class="subheading secondary--text text--lighten-3">关于我：</span>
-            <Viewer :body="userPublic.about" :editor="userPublic.about_editor" />
-          </div>
-
-          <div
-            v-if="
-              userPublic.homepage_url ||
-              userPublic.github_username ||
-              userPublic.twitter_username ||
-              userPublic.linkedin_url
-            "
-            class="my-3"
-          >
-            <span class="subheading secondary--text text--lighten-3"> 链接： </span>
-            <a
-              v-if="userPublic.homepage_url"
-              :href="userPublic.homepage_url"
-              class="text-decoration-none"
-              target="_blank"
-            >
-              <WebIcon />
-              个人主页
-            </a>
-            <a
-              v-if="userPublic.github_username"
-              :href="canonicalURLfromUsername(userPublic.github_username, 'github.com')"
-              class="text-decoration-none"
-              target="_blank"
-            >
-              <GithubIcon />
-              Github
-            </a>
-            <a
-              v-if="userPublic.twitter_username"
-              :href="canonicalURLfromUsername(userPublic.twitter_username, 'twitter.com')"
-              class="text-decoration-none"
-              target="_blank"
-            >
-              <TwitterIcon />
-              Twitter
-            </a>
-            <a
-              v-if="userPublic.linkedin_url"
-              :href="userPublic.linkedin_url"
-              class="text-decoration-none"
-              target="_blank"
-            >
-              <LinkedinIcon />
-              Linkedin
-            </a>
-          </div>
-
-          <div v-if="userPublic.residency_topics.length > 0" class="my-3">
-            <div class="subheading secondary--text text--lighten-3">居住过的地方</div>
-            <div>
-              <v-chip-group :column="!$vuetify.breakpoint.mobile">
-                <v-chip
-                  v-for="topic in userPublic.residency_topics"
-                  :key="topic.uuid"
-                  :to="'/topics/' + topic.uuid"
-                  >{{ topic.name }}
-                </v-chip>
-              </v-chip-group>
-            </div>
-          </div>
-          <div v-if="userPublic.profession_topic" class="my-3">
-            <div class="subheading secondary--text text--lighten-3">所在行业</div>
-            <div class="title primary--text text--darken-2">
-              <v-chip :to="'/topics/' + userPublic.profession_topic.uuid"
-                >{{ userPublic.profession_topic.name }}
-              </v-chip>
-            </div>
-          </div>
-
-          <template v-if="eduExps">
-            <div v-if="eduExps.length > 0" class="my-3">
-              <div class="subheading secondary--text text--lighten-3">教育经历</div>
-              <div
-                v-for="(eduExp, index) in eduExps"
-                :key="index"
-                class="title primary--text text--darken-2"
-              >
-                <router-link
-                  :to="'/topics/' + eduExp.school_topic.uuid"
-                  class="text-decoration-none"
-                >
-                  {{ eduExp.school_topic.name }}
-                </router-link>
-                ({{ $t(eduExp.level) }})
-              </div>
-            </div>
-          </template>
-          <v-skeleton-loader v-else type="text" />
-
-          <template v-if="workExps" class="my-3">
-            <div v-if="workExps.length > 0" class="my-3">
-              <div class="subheading secondary--text text--lighten-3">工作经历</div>
-              <div
-                v-for="(workExp, index) in workExps"
-                :key="index"
-                class="title primary--text text--darken-2"
-              >
-                <router-link
-                  :to="'/topics/' + workExp.position_topic.uuid"
-                  class="text-decoration-none"
-                >
-                  {{ workExp.position_topic.name }}
-                </router-link>
-                @
-                <router-link
-                  :to="'/topics/' + workExp.company_topic.uuid"
-                  class="text-decoration-none"
-                >
-                  {{ workExp.company_topic.name }}
-                </router-link>
-              </div>
-            </div>
-          </template>
-          <v-skeleton-loader v-else type="text" />
-
-          <template v-if="sites !== null">
-            <div v-if="sites.length > 0">
-              <div
-                v-if="$vuetify.breakpoint.mdAndUp"
-                class="subheading secondary--text text--lighten-3"
-              >
-                加入的圈子：
-                <span>
-                  <SiteBtn v-for="site in sites" :key="site.uuid" :site="site" />
-                </span>
-              </div>
-              <div v-else>
-                <span class="subheading secondary--text text--lighten-3 mr-2"> 加入的圈子： </span>
-                <SiteBtn v-for="site in sites" :key="site.uuid" :site="site" />
-              </div>
-            </div>
-          </template>
-          <v-skeleton-loader v-else type="text" />
-
-          <div v-if="userPublic.subscribed_topics.length > 0" class="my-3">
-            <div class="subheading secondary--text text--lighten-3">关注的话题：</div>
-            <v-chip
-              v-for="topic in userPublic.subscribed_topics"
-              :key="topic.uuid"
-              :to="'/topics/' + topic.uuid"
-              class="mr-1 mb-1"
-              small
-              >{{ topic.name }}
-            </v-chip>
-          </div>
-        </div>
         <v-skeleton-loader v-else type="card" />
 
         <div v-if="loggedIn">
@@ -282,27 +115,20 @@ import {
   IQuestionPreview,
   ISite,
   ISubmission,
-  IUserEducationExperience,
   IUserPreview,
   IUserPublic,
   IUserPublicForVisitor,
-  IUserWorkExperience,
 } from '@/interfaces';
 import QuestionPreview from '@/components/question/QuestionPreview.vue';
 import ArticlePreview from '@/components/ArticlePreview.vue';
 import Answer from '@/components/Answer.vue';
-import UserCard from '@/components/UserCard.vue';
+import UserProfileCard from '@/components/UserProfileCard.vue';
 
 import SiteBtn from '@/components/SiteBtn.vue';
 import SubmissionCard from '@/components/SubmissionCard.vue';
 import UserLink from '@/components/UserLink.vue';
 import UserGrid from '@/components/UserGrid.vue';
 import DynamicItemList from '@/components/DynamicItemList.vue';
-
-import TwitterIcon from '@/components/icons/TwitterIcon.vue';
-import WebIcon from '@/components/icons/WebIcon.vue';
-import GithubIcon from '@/components/icons/GithubIcon.vue';
-import LinkedinIcon from '@/components/icons/LinkedinIcon.vue';
 
 import { dispatchCaptureApiError } from '@/store/main/actions';
 import { readIsLoggedIn, readToken, readUserProfile } from '@/store/main/getters';
@@ -320,14 +146,10 @@ import EmptyPlaceholder from '@/components/EmptyPlaceholder.vue';
     RegisteredUserOnlyIcon,
     QuestionPreview,
     Answer,
-    UserCard,
+    UserProfileCard,
     UserLink,
     SiteBtn,
-    TwitterIcon,
-    WebIcon,
-    GithubIcon,
     UserGrid,
-    LinkedinIcon,
     ArticlePreview,
     SubmissionCard,
     DynamicItemList,
@@ -374,9 +196,6 @@ export default class User extends Vue {
   private userPublicForVisitor: IUserPublicForVisitor | null = null;
   private followers: IUserPreview[] | null = null;
   private followed: IUserPreview[] | null = null;
-  private eduExps: IUserEducationExperience[] | null = null;
-  private workExps: IUserWorkExperience[] | null = null;
-  private sites: ISite[] | null = null;
 
   get loggedIn() {
     return readIsLoggedIn(this.$store);
@@ -418,9 +237,6 @@ export default class User extends Vue {
       this.userPublicForVisitor = null;
       this.followers = null;
       this.followed = null;
-      this.eduExps = null;
-      this.workExps = null;
-      this.sites = null;
       this.load();
     }
   }
@@ -436,7 +252,6 @@ export default class User extends Vue {
         let title = this.userPublic!.full_name || this.userPublic!.handle;
         updateHead(this.$route.path, title, this.userPublic!.personal_introduction);
 
-        await this.renderProfileTab(this.userPublic);
         const currentItem = this.tabItems.find((item) => item.code === this.currentTabItem);
         if (currentItem && currentItem.render) {
           await currentItem.render(this.userPublic);
@@ -454,16 +269,6 @@ export default class User extends Vue {
         this.userPublicForVisitor = (await apiPeople.getUserPublic(this.token, this.handle)).data;
       }
     });
-  }
-
-  private canonicalURLfromUsername(username: string, domain: string) {
-    if (username.startsWith(domain)) {
-      return 'https://' + username;
-    } else if (username.includes(domain)) {
-      return username;
-    } else {
-      return 'https://' + domain + '/' + username;
-    }
   }
 
   private async loadAnswers(skip: number, limit: number) {
@@ -518,15 +323,6 @@ export default class User extends Vue {
 
   private async renderFollowed(userPublic: IUserPublic) {
     this.followed = (await apiPeople.getUserFollowed(this.token, userPublic.uuid)).data;
-  }
-
-  private async renderProfileTab(userPublic: IUserPublic) {
-    this.eduExps = (await apiPeople.getUserEducationExperiences(this.token, userPublic.uuid)).data;
-    this.workExps = (await apiPeople.getUserWorkExperiences(this.token, userPublic.uuid)).data;
-    const responses = await Promise.all(
-      userPublic.profiles.map((p) => apiSite.getSite(p.site.subdomain))
-    );
-    this.sites = responses.map((r) => r.data);
   }
 }
 </script>

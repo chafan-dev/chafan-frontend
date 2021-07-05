@@ -569,6 +569,7 @@ export interface IUserPublic {
   twitter_username?: string;
   linkedin_url?: string;
   homepage_url?: string;
+  residency_topics: ITopic[];
   karma: number;
   answers_count: number;
   submissions_count: number;
