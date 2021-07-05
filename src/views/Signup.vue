@@ -29,7 +29,7 @@
                   >的内容。
                 </div>
                 <v-form autocomplete="off">
-                  <h3>{{ $t('请先填入邀请码（20位）') }}</h3>
+                  <h3>请先填入邀请码（20位）</h3>
                   <ValidationProvider v-slot="{ errors }" name="邀请码" rules="required">
                     <v-text-field v-model="invitationToken" name="邀请码" required type="text" />
                     <span class="error--text">{{ errors[0] }}</span>
@@ -37,7 +37,7 @@
 
                   <v-divider class="mt-2 mb-4" />
 
-                  <h3>{{ $t('注册信息') }}</h3>
+                  <h3>注册信息</h3>
 
                   <ValidationProvider v-slot="{ errors }" name="email" rules="required|email">
                     <v-text-field v-model="email" :label="$t('Email')" name="login" type="text">
@@ -50,12 +50,23 @@
 
                   <v-text-field
                     v-model="verificationCode"
-                    :label="$t('验证码')"
+                    label="验证码"
                     name="verification-code"
                     type="text"
                   >
                     <template v-slot:prepend>
                       <VerifyCodeIcon />
+                    </template>
+                    <template v-slot:append-outer>
+                      <v-btn
+                        :disabled="intermediate || verificationCodeSent"
+                        color="primary"
+                        depressed
+                        small
+                        @click="sendVerificationCode"
+                      >
+                        发送验证码
+                      </v-btn>
                     </template>
                   </v-text-field>
 
@@ -94,20 +105,13 @@
               <v-card-actions>
                 <v-spacer />
                 <v-btn
-                  :disabled="intermediate || verificationCodeSent"
-                  color="primary"
-                  depressed
-                  small
-                  @click="sendVerificationCode"
-                  >{{ $t('Send me verification code') }}
-                </v-btn>
-                <v-btn
                   :disabled="intermediate || !valid"
                   color="primary"
                   depressed
                   small
                   @click="handleSubmit(openAccount)"
-                  >{{ $t('Verify code and open account') }}
+                >
+                  验证并注册
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -162,8 +166,12 @@ export default class Signup extends Vue {
     await dispatchCaptureApiError(this.$store, async () => {
       const response = await api.sendVerificationCode({ email: this.email });
       if (response) {
+        const msg =
+          response.data.msg === 'Verification code email sent'
+            ? '验证码已发送到邮箱'
+            : response.data.msg;
         commitAddNotification(this.$store, {
-          content: response.data.msg,
+          content: msg,
           color: 'success',
         });
       }
@@ -184,7 +192,7 @@ export default class Signup extends Vue {
       );
       if (response) {
         commitAddNotification(this.$store, {
-          content: this.$t('账号创建成功，返回登陆界面').toString(),
+          content: '账号创建成功，返回登陆界面',
           color: 'success',
         });
         this.$router.push('/login');

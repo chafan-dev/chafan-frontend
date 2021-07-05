@@ -208,19 +208,22 @@ export default class UserProfileDetails extends Vue {
   }
 
   async mounted() {
-    this.eduExps = (
-      await apiPeople.getUserEducationExperiences(this.token, this.userPublic.uuid)
-    ).data;
-    this.workExps = (await apiPeople.getUserWorkExperiences(this.token, this.userPublic.uuid)).data;
-    const responses = await Promise.all(
-      this.userPublic.profiles.map((p) => apiSite.getSite(p.site.subdomain))
-    );
-    this.sites = responses.map((r) => r.data);
-
-    this.enableFull =
-      this.userPublic.subscribed_topics.length > 0 ||
-      this.userPublic.residency_topics.length > 0 ||
-      this.sites?.length > 0;
+    if (this.loggedIn) {
+      this.eduExps = (
+        await apiPeople.getUserEducationExperiences(this.token, this.userPublic.uuid)
+      ).data;
+      this.workExps = (
+        await apiPeople.getUserWorkExperiences(this.token, this.userPublic.uuid)
+      ).data;
+      const responses = await Promise.all(
+        this.userPublic.profiles.map((p) => apiSite.getSite(p.site.subdomain))
+      );
+      this.sites = responses.map((r) => r.data);
+      this.enableFull =
+        this.userPublic.subscribed_topics.length > 0 ||
+        this.userPublic.residency_topics.length > 0 ||
+        this.sites?.length > 0;
+    }
   }
 
   get loggedIn() {

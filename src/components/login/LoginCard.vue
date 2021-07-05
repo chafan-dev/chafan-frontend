@@ -140,7 +140,7 @@
                     </v-btn>
                   </v-sheet>
 
-                  <v-sheet class="mt-4 d-flex align-center justify-end">
+                  <v-sheet class="mt-4" :class="{ 'd-flex': $vuetify.breakpoint.mdAndUp }">
                     <v-btn
                       class="text-capitalize"
                       depressed
