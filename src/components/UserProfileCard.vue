@@ -83,7 +83,7 @@
       </div>
       <div class="col align-self-center">
         <UserNameHeadline v-if="$vuetify.breakpoint.mdAndUp" :user-preview="userPreview" />
-        <v-divider class="my-2" />
+        <v-divider class="my-2" v-if="$vuetify.breakpoint.mdAndUp" />
         <UserProfileDetails v-if="userPublic" :user-public="userPublic" />
 
         <div class="d-flex">

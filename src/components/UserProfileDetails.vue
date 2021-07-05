@@ -83,7 +83,7 @@
       </div>
       <div v-else>教育经历：{{ eduExps[0].school_topic.name }} 等</div>
     </template>
-    <v-skeleton-loader v-else-if="eduExps === null" type="text" />
+    <v-skeleton-loader v-else-if="eduExps === null && loggedIn" type="text" />
 
     <template v-if="workExps && workExps.length > 0">
       <div v-if="full" class="my-3">
@@ -104,7 +104,7 @@
       </div>
       <div v-else>工作经历：{{ workExps[0].company_topic.name }} 等</div>
     </template>
-    <v-skeleton-loader v-else-if="workExps === null" type="text" />
+    <v-skeleton-loader v-else-if="workExps === null && loggedIn" type="text" />
 
     <template v-if="full">
       <div v-if="userPublic.residency_topics.length > 0" class="my-3">
@@ -138,7 +138,7 @@
           </div>
         </div>
       </template>
-      <v-skeleton-loader v-else type="text" />
+      <v-skeleton-loader v-else-if="loggedIn" type="text" />
 
       <div v-if="userPublic.subscribed_topics.length > 0" class="my-3">
         <div class="subheading secondary--text text--lighten-3">关注的话题：</div>
@@ -177,7 +177,7 @@
 <script lang="ts">
 import { ISite, IUserEducationExperience, IUserPublic, IUserWorkExperience } from '@/interfaces';
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { readToken, readUserProfile } from '@/store/main/getters';
+import { readIsLoggedIn, readToken, readUserProfile } from '@/store/main/getters';
 import SiteBtn from '@/components/SiteBtn.vue';
 import TwitterIcon from '@/components/icons/TwitterIcon.vue';
 import WebIcon from '@/components/icons/WebIcon.vue';
@@ -221,6 +221,10 @@ export default class UserProfileDetails extends Vue {
       this.userPublic.subscribed_topics.length > 0 ||
       this.userPublic.residency_topics.length > 0 ||
       this.sites?.length > 0;
+  }
+
+  get loggedIn() {
+    return readIsLoggedIn(this.$store);
   }
 
   get token() {
