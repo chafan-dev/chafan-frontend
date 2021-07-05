@@ -113,7 +113,6 @@ import {
   IAnswerPreview,
   IArticlePreview,
   IQuestionPreview,
-  ISite,
   ISubmission,
   IUserPreview,
   IUserPublic,
@@ -136,7 +135,6 @@ import RegisteredUserOnlyIcon from '@/components/icons/RegisteredUserOnlyIcon.vu
 import { Route, RouteRecord } from 'vue-router';
 import { isEqual, updateHead } from '@/common';
 import UserFeed from '@/components/home/UserFeed.vue';
-import { apiSite } from '@/api/site';
 import EmptyPlaceholder from '@/components/EmptyPlaceholder.vue';
 
 @Component({

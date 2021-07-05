@@ -192,8 +192,8 @@
                 <div class="text-center">
                   <v-btn class="text-capitalize" depressed large @click="switchLoginMethod">
                     使用
-                    <template v-if="loginMethod === 'email'"> 邮箱 </template>
-                    <template v-else> 手机号 </template>
+                    <template v-if="loginMethod === 'email'"> 手机号 </template>
+                    <template v-else> 邮箱 </template>
                     登录
                   </v-btn>
                 </div>
@@ -277,7 +277,7 @@ export default class LoginCard extends Vue {
   private async sendVerificationCode() {
     if (!this.phoneNumber) {
       commitAddNotification(this.$store, {
-        content: this.$t('电话号码为空').toString(),
+        content: '电话号码为空',
         color: 'error',
       });
       return;
